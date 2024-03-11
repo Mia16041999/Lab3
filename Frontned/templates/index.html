@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-commerce Frontend</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <h1>E-commerce Frontend</h1>
+
+  <!-- Products Section -->
+  <section>
+    <h2>Products</h2>
+    <button onclick="getProducts()">Get Products</button>
+    <div id="productList"></div>
+  </section>
+
+  <!-- Orders Section -->
+  <section>
+    <h2>Orders</h2>
+    <button onclick="placeOrder()">Place Order</button>
+    <div id="orderList"></div>
+  </section>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
