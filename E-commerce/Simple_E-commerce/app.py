@@ -1,14 +1,15 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, request
+import json
 
 app = Flask(__name__)
 
-# Dummy data for products and orders (you can replace with actual database or JSON file)
-products = [
-    {"id": 1, "name": "Product 1", "price": 10.0, "category": "Category 1", "stock": 100},
-    {"id": 2, "name": "Product 2", "price": 20.0, "category": "Category 2", "stock": 50},
-]
+# Load products and orders from JSON files
+with open('products.json') as f:
+    products = json.load(f)
 
-orders = []
+with open('orders.json') as f:
+    orders = json.load(f)
+
 
 # Products Routes
 @app.route('/products', methods=['GET'])
@@ -26,8 +27,9 @@ def get_product(product_id):
 @app.route('/products', methods=['POST'])
 def add_product():
     data = request.json
+    data['id'] = max(p['id'] for p in products) + 1  # Assign new ID to product
     products.append(data)
-    return jsonify(data)
+    return jsonify(data), 201
 
 @app.route('/products/<int:product_id>', methods=['PUT'])
 def update_product(product_id):
@@ -42,20 +44,30 @@ def update_product(product_id):
 @app.route('/products/<int:product_id>', methods=['DELETE'])
 def delete_product(product_id):
     global products
-    products = [p for p in products if p['id'] != product_id]
-    return jsonify({"message": "Product deleted"})
+    product = next((p for p in products if p['id'] == product_id), None)
+    if product:
+        products.remove(product)
+        return jsonify({"message": "Product deleted"}), 200
+    else:
+        return jsonify({"error": "Product not found"}), 404
+
 
 # Orders Routes
 @app.route('/orders', methods=['POST'])
 def create_order():
     data = request.json
+    data['id'] = max(o['id'] for o in orders) + 1  # Assign new ID to order
     orders.append(data)
-    return jsonify(data)
+    return jsonify(data), 201
 
 @app.route('/orders/<int:user_id>', methods=['GET'])
 def get_orders(user_id):
     user_orders = [order for order in orders if order.get('user_id') == user_id]
-    return jsonify(user_orders)
+    if user_orders:
+        return jsonify(user_orders)
+    else:
+        return jsonify({"error": "No orders found for user"}), 404
+
 
 @app.route('/')
 def home():

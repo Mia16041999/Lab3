@@ -1,4 +1,5 @@
-[
+{ "orders" : [
     {"orderId": 1001, "products": [{"productId": 1, "quantity": 1}, {"productId": 2, "quantity": 2}], "totalPrice": 1399.97, "customerId": 101},
     {"orderId": 1002, "products": [{"productId": 3, "quantity": 4}], "totalPrice": 39.96, "customerId": 102}
 ]
+}
